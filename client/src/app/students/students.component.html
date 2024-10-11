@@ -1,0 +1,327 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Student Form</h4>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-md-2">
+                  <mat-form-field class="example-full-width">
+                    <input
+                      matInput
+                      placeholder="First Name"
+                      type="text"
+                      formControlName="firstName"
+                    />
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('firstName').hasError('required') &&
+                        studentForm.get('firstName').touched
+                      "
+                    >
+                      First Name is required
+                    </mat-error>
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('firstName').hasError('minlength') &&
+                        studentForm.get('firstName').touched
+                      "
+                    >
+                      First Name must be at least 3 characters long
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-2">
+                  <mat-form-field class="example-full-width">
+                    <input
+                      matInput
+                      placeholder="Last Name"
+                      type="text"
+                      formControlName="lastName"
+                    />
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('lastName').hasError('required') &&
+                        studentForm.get('lastName').touched
+                      "
+                    >
+                      Last Name is required
+                    </mat-error>
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('lastName').hasError('minlength') &&
+                        studentForm.get('lastName').touched
+                      "
+                    >
+                      Last Name must be at least 3 characters long
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-2">
+                  <mat-form-field class="example-full-width">
+                    <input
+                      matInput
+                      placeholder="Student Email"
+                      type="email"
+                      formControlName="email"
+                    />
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('email').hasError('required') &&
+                        studentForm.get('email').touched
+                      "
+                    >
+                      Email is required
+                    </mat-error>
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('email').hasError('email') &&
+                        studentForm.get('email').touched
+                      "
+                    >
+                      Please enter a valid email address
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-2">
+                  <mat-form-field class="example-full-width">
+                    <input
+                      matInput
+                      placeholder="Phone Number"
+                      type="text"
+                      formControlName="phone"
+                    />
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('phone').hasError('required') &&
+                        studentForm.get('phone').touched
+                      "
+                    >
+                      Phone Number is required
+                    </mat-error>
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('phone').hasError('minlength') &&
+                        studentForm.get('phone').touched
+                      "
+                    >
+                      Phone Number must be at least 3 characters long
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-4">
+                  <mat-form-field class="example-full-width">
+                    <input
+                      matInput
+                      placeholder="Address"
+                      type="text"
+                      formControlName="address"
+                    />
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-3">
+                  <mat-form-field>
+                    <mat-label>Country</mat-label>
+                    <mat-select formControlName="country" required>
+                      <mat-option
+                        *ngFor="let country of countries"
+                        [value]="country"
+                      >
+                        {{ country }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('country').hasError('required') &&
+                        studentForm.get('country').touched
+                      "
+                    >
+                      Country is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-2">
+                  <mat-form-field>
+                    <mat-label>Institute</mat-label>
+                    <mat-select formControlName="instituteName" required (selectionChange)="onInstituteSelection($event)">
+                      <mat-option
+                        *ngFor="let institute of institutes"
+                        [value]="institute.id"
+                      >
+                        {{ institute.instituteName }}
+                      </mat-option>
+                    </mat-select>
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('instituteName').hasError('required') &&
+                        studentForm.get('instituteName').touched
+                      "
+                    >
+                      Institute is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-2">
+                  <mat-form-field>
+                    <mat-label>Intake</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="picker"
+                      formControlName="intake"
+                      required
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="picker"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('intake').hasError('required') &&
+                        studentForm.get('intake').touched
+                      "
+                    >
+                      Intake is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-3">
+                  <mat-form-field class="example-full-width">
+                    <input
+                      matInput
+                      placeholder="Course Title"
+                      type="text"
+                      formControlName="courseTitle"
+                    />
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('courseTitle').hasError('required') &&
+                        studentForm.get('courseTitle').touched
+                      "
+                    >
+                      Course Title is required
+                    </mat-error>
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('courseTitle').hasError('minlength') &&
+                        studentForm.get('courseTitle').touched
+                      "
+                    >
+                      Course Title must be at least 3 characters long
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-2">
+                  <mat-form-field>
+                    <input
+                      matInput
+                      type="file"
+                      (change)="onFileChange($event)"
+                      accept=".jpg, .jpeg, .png"
+                      required
+                    />
+                    <mat-error *ngIf="fileError">{{ fileError }}</mat-error>
+                  </mat-form-field>
+                  <img
+                    *ngIf="selectedImage"
+                    [src]="selectedImage"
+                    alt="Selected Image"
+                    width="100px"
+                    height="auto"
+                  />
+                </div>
+              </div>
+
+              <button mat-raised-button type="submit" class="btn btn-success pull-right" [disabled]="studentForm.invalid">
+                {{ isEditMode ? "Update Student" : "Add Student" }}
+              </button>
+              <div class="clearfix"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student List Section -->
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Student List</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Country</th>
+                    <th>Institute</th>
+                    <th>Intake</th>
+                    <th>Course Title</th>
+                    <th>Student ID Card</th>
+                    <th class="text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let student of students">
+                    <td>{{ student.firstName }}</td>
+                    <td>{{ student.lastName }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.phone }}</td>
+                    <td>{{ student.address }}</td>
+                    <td>{{ student.country }}</td>
+                    <td>{{ student.instituteName }}</td>
+                    <td>{{ student.intake | date : "shortDate" }}</td>
+                    <td>{{ student.courseTitle }}</td>
+                    <td>
+                      <img
+                        [src]="student.studentIdCard"
+                        alt="Student ID Card"
+                        width="100px"
+                        height="auto"
+                      />
+                    </td>
+                    <td class="text-center">
+                      <button
+                        class="btn btn-info"
+                        mat-button
+                        (click)="onEdit(student)"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        class="btn btn-danger"
+                        mat-button
+                        (click)="onDelete(student.id)"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

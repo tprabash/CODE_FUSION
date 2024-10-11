@@ -1,0 +1,73 @@
+<div class="main-content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-danger">
+              <h4 class="card-title">Institiute Form</h4>
+            </div>
+            <div class="card-body">
+              <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                  <div class="col-md-2">
+                    <mat-form-field class="example-full-width">
+                      <input
+                        matInput
+                        placeholder="Institute Name"
+                        type="text"
+                        formControlName="instituteName"
+                      />
+                      <mat-error *ngIf="studentForm.get('instituteName').hasError('required') && studentForm.get('instituteName').touched">
+                        First Name is required
+                      </mat-error>
+                      <mat-error *ngIf="studentForm.get('instituteName').hasError('minlength') && studentForm.get('instituteName').touched">
+                        First Name must be at least 3 characters long
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </div>
+  
+                <button mat-raised-button type="submit" class="btn btn-success pull-right" [disabled]="studentForm.invalid">
+                  {{ studentForm.get('id')?.value === 0 ? 'Add Institute' : 'Update Institute' }}
+                </button>
+                <div class="clearfix"></div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Institute List Section -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header card-header-danger">
+              <h4 class="card-title">Institute List</h4>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Institute</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let Institute of institutes">
+                      <td>{{ Institute.instituteName }}</td>
+                      <td class="text-center">
+                        <button class="btn btn-info" mat-button (click)="onEdit(Institute)">Edit</button>
+                        <button class="btn btn-danger" mat-button (click)="onDelete(Institute.id)">Delete</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
