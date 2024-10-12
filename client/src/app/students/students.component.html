@@ -88,7 +88,12 @@
                     >
                       Please enter a valid email address
                     </mat-error>
-                    <mat-error *ngIf="studentForm.get('email').hasError('emailExists') && studentForm.get('email').touched">
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('email').hasError('emailExists') &&
+                        studentForm.get('email').touched
+                      "
+                    >
                       This email already exists in our system.
                     </mat-error>
                   </mat-form-field>
@@ -136,19 +141,15 @@
                   <mat-form-field>
                     <mat-label>Country</mat-label>
                     <mat-select formControlName="country" required>
-                      <mat-option
-                        *ngFor="let country of countries"
-                        [value]="country"
-                      >
+                      <ngx-mat-select-search [formControl]="countryCtrl" placeholderLabel="Search country"></ngx-mat-select-search>
+                      <mat-option *ngFor="let country of filteredCountries" [value]="country">
                         {{ country }}
                       </mat-option>
+                      <mat-option *ngIf="filteredCountries.length === 0" disabled>
+                        No Options Available
+                      </mat-option>
                     </mat-select>
-                    <mat-error
-                      *ngIf="
-                        studentForm.get('country').hasError('required') &&
-                        studentForm.get('country').touched
-                      "
-                    >
+                    <mat-error *ngIf="studentForm.get('country').hasError('required') && studentForm.get('country').touched">
                       Country is required
                     </mat-error>
                   </mat-form-field>
@@ -166,11 +167,15 @@
                         [formControl]="myFilterControl"
                         placeholderLabel="Search..."
                       ></ngx-mat-select-search>
+
                       <mat-option
-                        *ngFor="let institute of institutes"
+                        *ngFor="let institute of filteredInstitutes"
                         [value]="institute.id"
                       >
                         {{ institute.instituteName }}
+                      </mat-option>
+                      <mat-option *ngIf="filteredInstitutes.length === 0" disabled>
+                        No Options Available
                       </mat-option>
                     </mat-select>
                     <mat-error
