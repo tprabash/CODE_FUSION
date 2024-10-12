@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Udara\\Desktop\\CODE FUSIONA ngular .NET Dashboard\\API\\API.csproj": {}
+    "C:\\Users\\Udara\\Desktop\\CODE FUSION ngular .NET Dashboard\\API\\API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Udara\\Desktop\\CODE FUSIONA ngular .NET Dashboard\\API\\API.csproj": {
+    "C:\\Users\\Udara\\Desktop\\CODE FUSION ngular .NET Dashboard\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Udara\\Desktop\\CODE FUSIONA ngular .NET Dashboard\\API\\API.csproj",
+        "projectUniqueName": "C:\\Users\\Udara\\Desktop\\CODE FUSION ngular .NET Dashboard\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "C:\\Users\\Udara\\Desktop\\CODE FUSIONA ngular .NET Dashboard\\API\\API.csproj",
+        "projectPath": "C:\\Users\\Udara\\Desktop\\CODE FUSION ngular .NET Dashboard\\API\\API.csproj",
         "packagesPath": "C:\\Users\\Udara\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Udara\\Desktop\\CODE FUSIONA ngular .NET Dashboard\\API\\obj\\",
+        "outputPath": "C:\\Users\\Udara\\Desktop\\CODE FUSION ngular .NET Dashboard\\API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

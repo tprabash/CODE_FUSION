@@ -237,7 +237,7 @@
                   </mat-form-field>
                   <img
                     *ngIf="selectedImage"
-                    [src]="selectedImage"
+                    [src]="'data:image/jpeg;base64,' + selectedImage"
                     alt="Selected Image"
                     width="100px"
                     height="auto"
@@ -293,7 +293,7 @@
                     <td>{{ student.courseTitle }}</td>
                     <td>
                       <img
-                        [src]="student.studentIdCard"
+                        [src]="'data:image/jpeg;base64,' +student.studentIdCard"
                         alt="Student ID Card"
                         width="100px"
                         height="auto"
