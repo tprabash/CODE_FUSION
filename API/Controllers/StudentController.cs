@@ -40,12 +40,12 @@ namespace API.Controllers
 
         [HttpPatch]
         [Route("UpdateStudent")]
-        public async Task<IActionResult> UpdateStudent([FromBody] Student student)
+        public async Task<IActionResult> UpdateStudent([FromForm] Student student)
         {
             await _studentDbContext.UpdateStudentAsync(student);
             return Ok(student);
         }
-
+        
         [HttpDelete]
         [Route("DeleteStudent/{id}")]
         public async Task<IActionResult> DeleteStudent(int id)

@@ -63,6 +63,7 @@ export class StudentsComponent implements OnInit {
   getStudents() {
     this.studentservice.getStudents().subscribe(data => {
       this.students = data;
+      console.log("this.students", this.students);
     });
   }
 
@@ -74,20 +75,33 @@ export class StudentsComponent implements OnInit {
         const controlValue = this.studentForm.get(key)?.value;
   
         if (key === 'instituteName') {
-          formData.append('instituteId', controlValue); // Adjust institute name to institute ID
+          formData.append('instituteId', controlValue);
         } else {
           const valueToAppend = key === 'intake' ? new Date(controlValue).toISOString() : controlValue;
-          formData.append(key, key === 'studentIdCard' && controlValue ? `data:image/jpeg;base64,${controlValue}` : valueToAppend);
+          formData.append(key, key === 'studentIdCard' && controlValue ? `${controlValue}` : valueToAppend);
         }
       });
   
       if (this.isEditMode) {
-        formData.append('id', this.studentForm.get('id')?.value); // Append student ID for update
-        this.studentservice.updateStudent(formData).subscribe(
+        const payload = new FormData();
+        payload.append('id', this.studentForm.get('id')?.value);
+        payload.append('firstName', this.studentForm.get('firstName')?.value);
+        payload.append('lastName', this.studentForm.get('lastName')?.value);
+        payload.append('email', this.studentForm.get('email')?.value);
+        payload.append('phone', this.studentForm.get('phone')?.value);
+        payload.append('address', this.studentForm.get('address')?.value);
+        payload.append('country', this.studentForm.get('country')?.value);
+        payload.append('instituteId', this.selectedInstitute);
+        payload.append('intake', new Date(this.studentForm.get('intake')?.value).toISOString());
+        payload.append('instituteName', this.studentForm.get('instituteName')?.value);
+        payload.append('courseTitle', this.studentForm.get('courseTitle')?.value);
+        payload.append('studentIdCard', this.studentForm.get('studentIdCard')?.value ? `${this.studentForm.get('studentIdCard')?.value}` : null);
+        
+        this.studentservice.updateStudent(payload).subscribe(
           response => {
             this.toastr.success('Student updated successfully');
-            this.getStudents(); // Refresh the list of students
-            this.resetForm();   // Reset the form after successful update
+            this.getStudents();
+            this.resetForm();
           },
           error => this.toastr.error('Failed to update student')
         );
@@ -95,8 +109,8 @@ export class StudentsComponent implements OnInit {
         this.studentservice.saveStudent(formData).subscribe(
           response => {
             this.toastr.success('Student saved successfully');
-            this.getStudents(); // Refresh the list of students
-            this.resetForm();   // Reset the form after successful save
+            this.getStudents();
+            this.resetForm();
           },
           error => this.toastr.error('Failed to save student')
         );
@@ -118,8 +132,10 @@ export class StudentsComponent implements OnInit {
       courseTitle: student.courseTitle
     });
   
-    this.selectedImage = student.studentIdCard ? `data:image/jpeg;base64,${student.studentIdCard}` : null;
+    this.selectedImage = student.studentIdCard ? `${student.studentIdCard}` : null;
+    this.studentForm.get('studentIdCard')?.setValue(this.selectedImage);
     this.isEditMode = true;
+    this.selectedInstitute = student.instituteId;
   }
 
   
@@ -174,13 +190,13 @@ export class StudentsComponent implements OnInit {
         reader.onload = (e: any) => {
           const base64String = e.target.result.split(',')[1];
           this.studentForm.patchValue({ studentIdCard: base64String });
-          this.selectedImage = e.target.result; // Show preview of the selected image
+          this.selectedImage = e.target.result;
           this.fileError = '';
         };
         reader.readAsDataURL(file);
       } else {
         this.fileError = 'Invalid file type or size. Please upload a jpg or png file smaller than 2MB.';
-        this.selectedImage = null; // Reset the image if it's invalid
+        this.selectedImage = null;
       }
     }
   }
