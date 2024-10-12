@@ -12,10 +12,17 @@ namespace API.Models
         }
 
         public DbSet<Student> Students { get; set; }
+        public DbSet<EmailCheckResult> EmailCheckResults { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=Student;User Id=sa;Password=1234;TrustServerCertificate=true;");
+        }
+
+         protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<EmailCheckResult>()
+                .HasNoKey();
         }
 
         public async Task<List<Student>> GetAllstudentsAsync()
@@ -37,7 +44,7 @@ namespace API.Models
                 new SqlParameter("@Intake", saveStudent.Intake),
                 new SqlParameter("@CourseTitle", saveStudent.CourseTitle),
                 new SqlParameter("@StudentIdCard", saveStudent.StudentIdCard ?? (object)DBNull.Value));
-                
+
         }
 
         public async Task UpdateStudentAsync(Student student)
@@ -61,5 +68,16 @@ namespace API.Models
             await Database.ExecuteSqlRawAsync("EXEC DeleteStudent @Id",
                 new SqlParameter("@Id", id));
         }
+
+        public async Task<bool> CheckEmailExistsAsync(string email)
+        {
+            var emailParameter = new SqlParameter("@Email", email);
+            var result = await EmailCheckResults
+                .FromSqlRaw("EXEC CheckEmailExists @Email", emailParameter)
+                .ToListAsync();
+
+            return result.Any() && result[0].EmailExists == 1;
+        }
+
     }
 }

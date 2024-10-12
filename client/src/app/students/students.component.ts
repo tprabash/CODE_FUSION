@@ -24,6 +24,7 @@ export class StudentsComponent implements OnInit {
   selectedInstitute: any;
   selectedFile: any;
   myFilterControl = new FormControl;
+  emailExists: boolean = false;
 
   constructor(
     private studentservice: studentservice,
@@ -78,12 +79,21 @@ export class StudentsComponent implements OnInit {
 
       Object.keys(this.studentForm.controls).forEach(key => {
         const controlValue = this.studentForm.get(key)?.value;
-
+      
         if (key === 'instituteName') {
           formData.append('instituteId', controlValue);
         } else {
-          const valueToAppend = key === 'intake' ? new Date(controlValue).toISOString() : controlValue;
-          formData.append(key, key === 'studentIdCard' && controlValue ? `${controlValue}` : valueToAppend);
+          let valueToAppend = controlValue;
+      
+          if (key === 'intake') {
+            valueToAppend = new Date(controlValue).toISOString();
+          }
+      
+          if (key === 'studentIdCard' && controlValue) {
+            valueToAppend = controlValue.replace(/^data:image\/[a-z]+;base64,/, '');
+          }
+      
+          formData.append(key, valueToAppend);
         }
       });
 
@@ -100,8 +110,11 @@ export class StudentsComponent implements OnInit {
         payload.append('intake', new Date(this.studentForm.get('intake')?.value).toISOString());
         payload.append('instituteName', this.studentForm.get('instituteName')?.value);
         payload.append('courseTitle', this.studentForm.get('courseTitle')?.value);
-        payload.append('studentIdCard', this.studentForm.get('studentIdCard')?.value ? `${this.studentForm.get('studentIdCard')?.value}` : null);
-
+      
+        const studentIdCardValue = this.studentForm.get('studentIdCard')?.value;
+        const sanitizedStudentIdCard = studentIdCardValue ? studentIdCardValue.replace(/^data:image\/[a-z]+;base64,/, '') : null;
+        payload.append('studentIdCard', sanitizedStudentIdCard);
+      
         this.studentservice.updateStudent(payload).subscribe(
           response => {
             this.toastr.success('Student updated successfully');
@@ -111,14 +124,18 @@ export class StudentsComponent implements OnInit {
           error => this.toastr.error('Failed to update student')
         );
       } else {
-        this.studentservice.saveStudent(formData).subscribe(
-          response => {
-            this.toastr.success('Student saved successfully');
-            this.getStudents();
-            this.resetForm();
-          },
-          error => this.toastr.error('Failed to save student')
-        );
+        if (this.emailExists) {
+          this.toastr.error('Email already exists, cannot submit form');
+        } else {
+          this.studentservice.saveStudent(formData).subscribe(
+            response => {
+              this.toastr.success('Student saved successfully');
+              this.getStudents();
+              this.resetForm();
+            },
+            error => this.toastr.error('Failed to save student')
+          );
+        }
       }
     }
   }
@@ -219,6 +236,33 @@ export class StudentsComponent implements OnInit {
     this.dialog.open(ImageDialogComponent, {
       data: { studentIdCard },
     });
+  }
+
+  emailCheck(event: any) {
+    const input = event.target;
+    const email = input.value;
+  
+    if (email) {
+      this.studentservice.checkEmailExists(email).subscribe(
+        response => {
+          if (response) {
+            this.studentForm.get('email').setErrors({ emailExists: true });
+            this.emailExists = true;
+          } else {
+            this.studentForm.get('email').setErrors(null);
+            this.emailExists = false;
+          }
+        },
+        error => {
+          this.emailExists = false;
+          this.studentForm.get('email').setErrors(null);
+        }
+      );
+    } else {
+      console.log('Email is empty');
+      this.emailExists = false;
+      this.studentForm.get('email').setErrors(null); 
+    }
   }
 
 }
