@@ -58,7 +58,7 @@ namespace API.Models
 
         public async Task DeleteStudentByIdAsync(int id)
         {
-            await Database.ExecuteSqlRawAsync("EXEC DeleteStudents @Id",
+            await Database.ExecuteSqlRawAsync("EXEC DeleteStudent @Id",
                 new SqlParameter("@Id", id));
         }
     }

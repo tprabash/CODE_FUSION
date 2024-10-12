@@ -153,7 +153,15 @@
                 <div class="col-md-2">
                   <mat-form-field>
                     <mat-label>Institute</mat-label>
-                    <mat-select formControlName="instituteName" required (selectionChange)="onInstituteSelection($event)">
+                    <mat-select
+                      formControlName="instituteName"
+                      required
+                      (selectionChange)="onInstituteSelection($event)"
+                    >
+                      <ngx-mat-select-search
+                        [formControl]="myFilterControl"
+                        placeholderLabel="Search..."
+                      ></ngx-mat-select-search>
                       <mat-option
                         *ngFor="let institute of institutes"
                         [value]="institute.id"
@@ -237,7 +245,7 @@
                   </mat-form-field>
                   <img
                     *ngIf="selectedImage"
-                    [src]="'data:image/jpeg;base64,' + selectedImage"
+                    [src]="selectedImage"
                     alt="Selected Image"
                     width="100px"
                     height="auto"
@@ -245,7 +253,12 @@
                 </div>
               </div>
 
-              <button mat-raised-button type="submit" class="btn btn-success pull-right" [disabled]="studentForm.invalid">
+              <button
+                mat-raised-button
+                type="submit"
+                class="btn btn-success pull-right"
+                [disabled]="studentForm.invalid"
+              >
                 {{ isEditMode ? "Update Student" : "Add Student" }}
               </button>
               <div class="clearfix"></div>
@@ -293,10 +306,14 @@
                     <td>{{ student.courseTitle }}</td>
                     <td>
                       <img
-                        [src]="'data:image/jpeg;base64,' +student.studentIdCard"
+                        [src]="
+                          'data:image/jpeg;base64,' + student.studentIdCard
+                        "
                         alt="Student ID Card"
                         width="100px"
                         height="auto"
+                        (click)="openDialog(student.studentIdCard)"
+                        style="cursor: pointer;"
                       />
                     </td>
                     <td class="text-center">

@@ -38,7 +38,7 @@ namespace API.Models
 
         public async Task DeleteInstituteByIdAsync(int id)
         {
-            await Database.ExecuteSqlRawAsync("EXEC DeleteInstitutes @Id",
+            await Database.ExecuteSqlRawAsync("EXEC DeleteInstitute @Id",
                 new SqlParameter("@Id", id));
         }
     }

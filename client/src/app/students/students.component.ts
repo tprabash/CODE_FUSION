@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Student } from 'app/_models/student.model';
 import { studentservice } from 'app/_services/student.service';
 import { ToastrService } from 'ngx-toastr';
 import { InstituteService } from 'app/_services/institute.service';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ImageDialogComponent } from '../image-dialog/image-dialog.component';
 
 @Component({
   selector: 'app-students',
@@ -20,12 +23,14 @@ export class StudentsComponent implements OnInit {
   isEditMode: boolean = false;
   selectedInstitute: any;
   selectedFile: any;
+  myFilterControl = new FormControl;
 
   constructor(
     private studentservice: studentservice,
     private instituteService: InstituteService,
     private fb: FormBuilder,
     private toastr: ToastrService,
+    private dialog: MatDialog,
   ) {
     this.studentForm = this.fb.group({
       id: [0],
@@ -70,10 +75,10 @@ export class StudentsComponent implements OnInit {
   onSubmit() {
     if (this.studentForm.valid) {
       const formData = new FormData();
-  
+
       Object.keys(this.studentForm.controls).forEach(key => {
         const controlValue = this.studentForm.get(key)?.value;
-  
+
         if (key === 'instituteName') {
           formData.append('instituteId', controlValue);
         } else {
@@ -81,7 +86,7 @@ export class StudentsComponent implements OnInit {
           formData.append(key, key === 'studentIdCard' && controlValue ? `${controlValue}` : valueToAppend);
         }
       });
-  
+
       if (this.isEditMode) {
         const payload = new FormData();
         payload.append('id', this.studentForm.get('id')?.value);
@@ -96,7 +101,7 @@ export class StudentsComponent implements OnInit {
         payload.append('instituteName', this.studentForm.get('instituteName')?.value);
         payload.append('courseTitle', this.studentForm.get('courseTitle')?.value);
         payload.append('studentIdCard', this.studentForm.get('studentIdCard')?.value ? `${this.studentForm.get('studentIdCard')?.value}` : null);
-        
+
         this.studentservice.updateStudent(payload).subscribe(
           response => {
             this.toastr.success('Student updated successfully');
@@ -117,7 +122,7 @@ export class StudentsComponent implements OnInit {
       }
     }
   }
-  
+
   onEdit(student: Student) {
     this.studentForm.patchValue({
       id: student.id,
@@ -131,15 +136,15 @@ export class StudentsComponent implements OnInit {
       intake: student.intake,
       courseTitle: student.courseTitle
     });
-  
-    this.selectedImage = student.studentIdCard ? `${student.studentIdCard}` : null;
+
+    this.selectedImage = student.studentIdCard ? `data:image/jpeg;base64,${student.studentIdCard}` : null;
     this.studentForm.get('studentIdCard')?.setValue(this.selectedImage);
     this.isEditMode = true;
     this.selectedInstitute = student.instituteId;
   }
 
-  
-  getInstitutes(){
+
+  getInstitutes() {
     this.instituteService.getInstitutes().subscribe(data => {
       this.institutes = data;
     });
@@ -148,17 +153,26 @@ export class StudentsComponent implements OnInit {
   onInstituteSelection(event: any) {
     this.selectedInstitute = event.value;
   }
-  
+
   onDelete(studentId: number) {
-    this.studentservice.deleteStudent(studentId).subscribe(
-      response => {
-        this.toastr.success('Student deleted successfully!');
-        this.getStudents();
-      },
-      error => {
-        this.toastr.error('Failed to delete student!');
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: { message: 'Are you sure you want to delete this student?' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.studentservice.deleteStudent(studentId).subscribe(
+          response => {
+            this.toastr.success('Student deleted successfully!');
+            this.getStudents();
+          },
+          error => {
+            this.toastr.error('Failed to delete student!');
+          }
+        );
       }
-    );
+    });
   }
 
   resetForm() {
@@ -179,13 +193,13 @@ export class StudentsComponent implements OnInit {
     this.selectedImage = null;
     this.isEditMode = false;
   }
-  
+
   onFileChange(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.selectedFile = file;
       const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-      if (validTypes.includes(file.type) && file.size < 2 * 1024 * 1024) {
+      if (validTypes.includes(file.type) && file.size < 10 * 1024 * 1024) {
         const reader = new FileReader();
         reader.onload = (e: any) => {
           const base64String = e.target.result.split(',')[1];
@@ -195,10 +209,16 @@ export class StudentsComponent implements OnInit {
         };
         reader.readAsDataURL(file);
       } else {
-        this.fileError = 'Invalid file type or size. Please upload a jpg or png file smaller than 2MB.';
+        this.fileError = 'Invalid file type or size. Please upload a jpg or png file smaller than 10MB.';
         this.selectedImage = null;
       }
     }
   }
-  
+
+  openDialog(studentIdCard: string) {
+    this.dialog.open(ImageDialogComponent, {
+      data: { studentIdCard },
+    });
+  }
+
 }
