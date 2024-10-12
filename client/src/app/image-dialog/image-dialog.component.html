@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Student ID Card</h2>
+<div mat-dialog-content class="text-center">
+  <img
+    [src]="'data:image/jpeg;base64,' + data.studentIdCard"
+    alt="Student ID Card"
+    width="75%"
+    height="auto"
+  />
+</div>
+<div mat-dialog-actions>
+  <button mat-button class="btn btn-info" (click)="downloadImage()">Download</button>
+  <button mat-button mat-dialog-close class="btn btn-danger">Close</button>
+</div>

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Institute } from 'app/_models/institute.model';
 import { InstituteService } from 'app/_services/institute.service';
 import { ToastrService } from 'ngx-toastr';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-institute',
@@ -16,7 +18,8 @@ export class InstituteComponent implements OnInit {
   constructor(
     private instituteService: InstituteService,
     private fb: FormBuilder,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private dialog: MatDialog
   ) {
     this.studentForm = this.fb.group({
       id: [0],
@@ -43,7 +46,7 @@ export class InstituteComponent implements OnInit {
   onSubmit() {
     if (this.studentForm.valid) {
       if (this.studentForm.get('id')?.value === 0) {
-        // Add Institute
+
         const formData = new FormData();
         formData.append('instituteName', this.studentForm.get('instituteName')?.value);
   
@@ -58,7 +61,7 @@ export class InstituteComponent implements OnInit {
           }
         );
       } else {
-        // Update Institute
+
         const institute = {
           id: this.studentForm.get('id')?.value,
           instituteName: this.studentForm.get('instituteName')?.value,
@@ -82,16 +85,25 @@ export class InstituteComponent implements OnInit {
   }
 
   onDelete(instituteId: number) {
-    this.instituteService.deleteInstitute(instituteId).subscribe(
-      response => {
-        this.toastr.success('Institute deleted successfully!');
-        this.getInstitutes();
-      },
-      error => {
-        this.toastr.error('Failed to delete institute!');
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: { message: 'Are you sure you want to delete this institute?' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.instituteService.deleteInstitute(instituteId).subscribe(
+          response => {
+            this.toastr.success('Institute deleted successfully!');
+            this.getInstitutes();
+          },
+          error => {
+            this.toastr.error('Failed to delete institute!');
+          }
+        );
       }
-    );
-}
+    });
+  }
 
   resetForm() {
     this.studentForm.reset({

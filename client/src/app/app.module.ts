@@ -1,5 +1,5 @@
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
@@ -18,6 +18,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { InstituteComponent } from './institute/institute.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
+import { ImageDialogComponent } from './image-dialog/image-dialog.component'; 
 
 @NgModule({
   imports: [
@@ -36,6 +39,7 @@ import { InstituteComponent } from './institute/institute.component';
     MatSelectModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatIconModule,
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right',
       preventDuplicates: true, 
@@ -46,9 +50,11 @@ import { InstituteComponent } from './institute/institute.component';
     AdminLayoutComponent,
     StudentsComponent,
     InstituteComponent,
-
+    ConfirmDialogComponent,
+    ImageDialogComponent,
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ConfirmDialogComponent]
 })
 export class AppModule { }
