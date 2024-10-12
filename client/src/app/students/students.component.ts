@@ -7,6 +7,7 @@ import { InstituteService } from 'app/_services/institute.service';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageDialogComponent } from '../image-dialog/image-dialog.component';
+import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 
 @Component({
   selector: 'app-students',
@@ -15,16 +16,19 @@ import { ImageDialogComponent } from '../image-dialog/image-dialog.component';
 })
 export class StudentsComponent implements OnInit {
   students: Student[] = [];
-  studentForm: FormGroup;
   countries: string[];
-  institutes: any;
   fileError: string = '';
   selectedImage: any;
   isEditMode: boolean = false;
   selectedInstitute: any;
   selectedFile: any;
-  myFilterControl = new FormControl;
   emailExists: boolean = false;
+  studentForm: FormGroup;
+  countryCtrl = new FormControl();
+  filteredCountries: string[] = [];
+  institutes: any[] = [];
+  filteredInstitutes: any[] = [];
+  myFilterControl = new FormControl();
 
   constructor(
     private studentservice: studentservice,
@@ -52,12 +56,62 @@ export class StudentsComponent implements OnInit {
     this.getStudents();
     this.getCountries();
     this.getInstitutes();
+    this.countryFilter();
+    this.instituteFilter();
+  }
+
+  instituteFilter() {
+    this.myFilterControl.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe(value => {
+        this.filterInstitutes(value);
+      });
+  }
+
+  getInstitutes() {
+    this.instituteService.getInstitutes().subscribe(
+      institutes => {
+        this.institutes = institutes.sort((a, b) => a.instituteName.localeCompare(b.instituteName));
+        this.filteredInstitutes = this.institutes;
+      },
+      error => {
+        console.error('Error fetching institutes:', error);
+        this.toastr.error('Failed to load institutes.');
+      }
+    );
+  }
+
+  filterInstitutes(value: string) {
+    if (value) {
+      this.filteredInstitutes = this.institutes.filter(institute =>
+        institute.instituteName.toLowerCase().includes(value.toLowerCase())
+      );
+    } else {
+      this.filteredInstitutes = this.institutes;
+    }
+  }
+
+  countryFilter() {
+    this.countryCtrl.valueChanges
+      .pipe(debounceTime(300))
+      .subscribe(value => {
+        if (value) {
+          this.filteredCountries = this.countries.filter(country =>
+            country.toLowerCase().includes(value.toLowerCase())
+          );
+        } else {
+          this.filteredCountries = this.countries;
+        }
+      });
+
+    this.filteredCountries = this.countries;
   }
 
   getCountries() {
     this.studentservice.getCountries().subscribe(
       countries => {
-        this.countries = countries;
+        this.countries = countries.sort((a, b) => a.localeCompare(b));
+        this.filteredCountries = this.countries;
       },
       error => {
         console.error('Error fetching countries:', error);
@@ -86,6 +140,7 @@ export class StudentsComponent implements OnInit {
           let valueToAppend = controlValue;
       
           if (key === 'intake') {
+            // Directly converting to ISO string without adding a day
             valueToAppend = new Date(controlValue).toISOString();
           }
       
@@ -107,10 +162,12 @@ export class StudentsComponent implements OnInit {
         payload.append('address', this.studentForm.get('address')?.value);
         payload.append('country', this.studentForm.get('country')?.value);
         payload.append('instituteId', this.selectedInstitute);
+        
+        // Using the intake date directly without modification
         payload.append('intake', new Date(this.studentForm.get('intake')?.value).toISOString());
         payload.append('instituteName', this.studentForm.get('instituteName')?.value);
         payload.append('courseTitle', this.studentForm.get('courseTitle')?.value);
-      
+        
         const studentIdCardValue = this.studentForm.get('studentIdCard')?.value;
         const sanitizedStudentIdCard = studentIdCardValue ? studentIdCardValue.replace(/^data:image\/[a-z]+;base64,/, '') : null;
         payload.append('studentIdCard', sanitizedStudentIdCard);
@@ -158,13 +215,6 @@ export class StudentsComponent implements OnInit {
     this.studentForm.get('studentIdCard')?.setValue(this.selectedImage);
     this.isEditMode = true;
     this.selectedInstitute = student.instituteId;
-  }
-
-
-  getInstitutes() {
-    this.instituteService.getInstitutes().subscribe(data => {
-      this.institutes = data;
-    });
   }
 
   onInstituteSelection(event: any) {
@@ -241,7 +291,7 @@ export class StudentsComponent implements OnInit {
   emailCheck(event: any) {
     const input = event.target;
     const email = input.value;
-  
+
     if (email) {
       this.studentservice.checkEmailExists(email).subscribe(
         response => {
@@ -261,7 +311,7 @@ export class StudentsComponent implements OnInit {
     } else {
       console.log('Email is empty');
       this.emailExists = false;
-      this.studentForm.get('email').setErrors(null); 
+      this.studentForm.get('email').setErrors(null);
     }
   }
 

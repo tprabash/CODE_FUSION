@@ -21,6 +21,9 @@ import { InstituteComponent } from './institute/institute.component';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { ImageDialogComponent } from './image-dialog/image-dialog.component'; 
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { MatOptionModule } from '@angular/material/core';
+import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
   imports: [
@@ -40,6 +43,9 @@ import { ImageDialogComponent } from './image-dialog/image-dialog.component';
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
+    NgxMatSelectSearchModule,
+    MatOptionModule,
+    BrowserModule,
     ToastrModule.forRoot({
       positionClass: 'toast-bottom-right',
       preventDuplicates: true, 
