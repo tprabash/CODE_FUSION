@@ -45,7 +45,7 @@ namespace API.Controllers
             await _studentDbContext.UpdateStudentAsync(student);
             return Ok(student);
         }
-        
+
         [HttpDelete]
         [Route("DeleteStudent/{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
@@ -53,5 +53,32 @@ namespace API.Controllers
             await _studentDbContext.DeleteStudentByIdAsync(id);
             return NoContent();
         }
+
+        // [HttpGet]
+        // [Route("CheckEmailExists/{email}")]
+        // public async Task<IActionResult> CheckEmailExists(string email)
+        // {
+        //     if (string.IsNullOrWhiteSpace(email))
+        //     {
+        //         return BadRequest("Email is required.");
+        //     }
+
+        //     bool emailExists = await _studentDbContext.CheckEmailExistsAsync(email);
+        //     return Ok(new { EmailExists = emailExists });
+        // }
+
+        [HttpGet]
+        [Route("CheckEmailExists/{email}")]
+        public async Task<IActionResult> CheckEmailExists(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return BadRequest("Email is required.");
+            }
+
+            bool emailExists = await _studentDbContext.CheckEmailExistsAsync(email);
+            return Ok(emailExists);  // Return the boolean directly
+        }
+
     }
 }

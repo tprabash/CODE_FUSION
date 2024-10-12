@@ -70,6 +70,7 @@
                       placeholder="Student Email"
                       type="email"
                       formControlName="email"
+                      (input)="emailCheck($event)"
                     />
                     <mat-error
                       *ngIf="
@@ -86,6 +87,9 @@
                       "
                     >
                       Please enter a valid email address
+                    </mat-error>
+                    <mat-error *ngIf="studentForm.get('email').hasError('emailExists') && studentForm.get('email').touched">
+                      This email already exists in our system.
                     </mat-error>
                   </mat-form-field>
                 </div>
@@ -268,7 +272,6 @@
       </div>
     </div>
 
-    <!-- Student List Section -->
     <div class="row">
       <div class="col-md-12">
         <div class="card">
@@ -313,7 +316,7 @@
                         width="100px"
                         height="auto"
                         (click)="openDialog(student.studentIdCard)"
-                        style="cursor: pointer;"
+                        style="cursor: pointer"
                       />
                     </td>
                     <td class="text-center">
