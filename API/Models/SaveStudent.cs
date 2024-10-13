@@ -14,5 +14,6 @@ namespace API.Models
         public DateTime Intake { get; set; }
         public string CourseTitle { get; set; }
         public string StudentIdCard { get; set; }
+        public int ApprovalStatus { get; set; }
     }
 }

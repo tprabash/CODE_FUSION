@@ -25,8 +25,12 @@ export class studentservice {
     return this.http.patch<Student>(`${this.apiUrl}/UpdateStudent`, formData);
   }
 
-  deleteStudent(studentId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/deleteStudent/${studentId}`);
+  deactiveStudent(studentId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/DeactiveStudent/${studentId}`, {});
+  }
+
+  activeStudent(studentId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/ActivateStudent/${studentId}`, {});
   }
 
   getCountries(): Observable<string[]> {
@@ -34,10 +38,6 @@ export class studentservice {
       map(data => data.map(country => country.name.common))
     );
   }
-
-  // checkEmailExists(email: string): Observable<{ EmailExists: boolean }> {
-  //   return this.http.get<{ EmailExists: boolean }>(`${this.apiUrl}/CheckEmailExists/${email}`);
-  // }
 
   checkEmailExists(email: string): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/CheckEmailExists/${email}`);

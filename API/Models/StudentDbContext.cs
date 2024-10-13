@@ -19,7 +19,7 @@ namespace API.Models
             optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=Student;User Id=sa;Password=1234;TrustServerCertificate=true;");
         }
 
-         protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<EmailCheckResult>()
                 .HasNoKey();
@@ -33,7 +33,7 @@ namespace API.Models
         public async Task SaveStudentAsync(SaveStudent saveStudent)
         {
 
-            await Database.ExecuteSqlRawAsync("EXEC SaveStudents @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId, @Intake, @CourseTitle, @StudentIdCard",
+            await Database.ExecuteSqlRawAsync("EXEC SaveStudents @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId, @Intake, @CourseTitle, @ApprovalStatus, @StudentIdCard",
                 new SqlParameter("@FirstName", saveStudent.FirstName),
                 new SqlParameter("@LastName", saveStudent.LastName),
                 new SqlParameter("@Email", saveStudent.Email),
@@ -43,6 +43,7 @@ namespace API.Models
                 new SqlParameter("@InstituteId", saveStudent.InstituteId),
                 new SqlParameter("@Intake", saveStudent.Intake),
                 new SqlParameter("@CourseTitle", saveStudent.CourseTitle),
+                new SqlParameter("@ApprovalStatus", saveStudent.ApprovalStatus),
                 new SqlParameter("@StudentIdCard", saveStudent.StudentIdCard ?? (object)DBNull.Value));
 
         }
@@ -63,10 +64,17 @@ namespace API.Models
                 new SqlParameter("@StudentIdCard", student.StudentIdCard ?? (object)DBNull.Value));
         }
 
-        public async Task DeleteStudentByIdAsync(int id)
+        public async Task DeactiveStudentByIdAsync(int id)
         {
-            await Database.ExecuteSqlRawAsync("EXEC DeleteStudent @Id",
-                new SqlParameter("@Id", id));
+            var sqlParam = new SqlParameter("@Id", id);
+            await Database.ExecuteSqlRawAsync("EXEC DeactiveStudent @Id", sqlParam);
+        }
+
+
+        public async Task ActivateStudentByIdAsync(int id)
+        {
+            var sqlParam = new SqlParameter("@Id", id);
+            await Database.ExecuteSqlRawAsync("EXEC ActivateStudent @Id", sqlParam);
         }
 
         public async Task<bool> CheckEmailExistsAsync(string email)

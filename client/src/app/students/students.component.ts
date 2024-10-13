@@ -29,6 +29,7 @@ export class StudentsComponent implements OnInit {
   institutes: any[] = [];
   filteredInstitutes: any[] = [];
   myFilterControl = new FormControl();
+  today: Date = new Date();
 
   constructor(
     private studentservice: studentservice,
@@ -48,7 +49,8 @@ export class StudentsComponent implements OnInit {
       instituteName: ['', Validators.required],
       intake: ['', Validators.required],
       courseTitle: ['', [Validators.required, Validators.minLength(3)]],
-      studentIdCard: [null, Validators.required]
+      studentIdCard: [null, Validators.required],
+      approvalStatus: [0]
     });
   }
 
@@ -58,6 +60,22 @@ export class StudentsComponent implements OnInit {
     this.getInstitutes();
     this.countryFilter();
     this.instituteFilter();
+  }
+
+  isExpired(licenceExpiryDate: string | null | undefined): boolean {
+    if (!licenceExpiryDate) {
+      return false;
+    }
+    const expiryDate = new Date(licenceExpiryDate);
+    return expiryDate < this.today;
+  }
+
+  isActive(licenceExpiryDate: string | null | undefined): boolean {
+    if (!licenceExpiryDate) {
+      return false;
+    }
+    const expiryDate = new Date(licenceExpiryDate);
+    return expiryDate >= this.today;
   }
 
   instituteFilter() {
@@ -123,7 +141,6 @@ export class StudentsComponent implements OnInit {
   getStudents() {
     this.studentservice.getStudents().subscribe(data => {
       this.students = data;
-      console.log("this.students", this.students);
     });
   }
 
@@ -133,21 +150,25 @@ export class StudentsComponent implements OnInit {
 
       Object.keys(this.studentForm.controls).forEach(key => {
         const controlValue = this.studentForm.get(key)?.value;
-      
+
         if (key === 'instituteName') {
           formData.append('instituteId', controlValue);
         } else {
           let valueToAppend = controlValue;
-      
+
           if (key === 'intake') {
-            // Directly converting to ISO string without adding a day
             valueToAppend = new Date(controlValue).toISOString();
           }
-      
+
+          if (key === 'intake') {
+            const date = new Date(controlValue);
+            valueToAppend = date.toISOString().slice(0, 10);
+          }
+
           if (key === 'studentIdCard' && controlValue) {
             valueToAppend = controlValue.replace(/^data:image\/[a-z]+;base64,/, '');
           }
-      
+
           formData.append(key, valueToAppend);
         }
       });
@@ -162,16 +183,14 @@ export class StudentsComponent implements OnInit {
         payload.append('address', this.studentForm.get('address')?.value);
         payload.append('country', this.studentForm.get('country')?.value);
         payload.append('instituteId', this.selectedInstitute);
-        
-        // Using the intake date directly without modification
         payload.append('intake', new Date(this.studentForm.get('intake')?.value).toISOString());
         payload.append('instituteName', this.studentForm.get('instituteName')?.value);
         payload.append('courseTitle', this.studentForm.get('courseTitle')?.value);
-        
+
         const studentIdCardValue = this.studentForm.get('studentIdCard')?.value;
         const sanitizedStudentIdCard = studentIdCardValue ? studentIdCardValue.replace(/^data:image\/[a-z]+;base64,/, '') : null;
         payload.append('studentIdCard', sanitizedStudentIdCard);
-      
+
         this.studentservice.updateStudent(payload).subscribe(
           response => {
             this.toastr.success('Student updated successfully');
@@ -221,21 +240,49 @@ export class StudentsComponent implements OnInit {
     this.selectedInstitute = event.value;
   }
 
-  onDelete(studentId: number) {
+  deactive(studentId: number): void {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
-      data: { message: 'Are you sure you want to delete this student?' }
+      data: {
+        message: 'Are you sure you want to deactivate this student?',
+        buttonName: 'Deactivate'
+      },
+
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.studentservice.deleteStudent(studentId).subscribe(
+        this.studentservice.deactiveStudent(studentId).subscribe(
           response => {
-            this.toastr.success('Student deleted successfully!');
+            this.toastr.success('Student deactivated successfully!');
             this.getStudents();
           },
           error => {
-            this.toastr.error('Failed to delete student!');
+            this.toastr.error('Failed to deactivate student!');
+          }
+        );
+      }
+    });
+  }
+
+  onActive(studentId: number): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        message: 'Are you sure you want to Activate this student?',
+        buttonName: 'Activate'
+        }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.studentservice.activeStudent(studentId).subscribe(
+          response => {
+            this.toastr.success('Student Activated successfully!');
+            this.getStudents();
+          },
+          error => {
+            this.toastr.error('Failed to Activate student!');
           }
         );
       }
@@ -314,5 +361,6 @@ export class StudentsComponent implements OnInit {
       this.studentForm.get('email').setErrors(null);
     }
   }
+
 
 }
