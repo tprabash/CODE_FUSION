@@ -11,4 +11,6 @@ export interface Student {
   courseTitle: string;
   studentIdCard: string;
   instituteId: number;
+  licenceStatus: number;
+  approvalStatus: number;
 }

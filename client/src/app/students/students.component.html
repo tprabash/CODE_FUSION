@@ -9,6 +9,15 @@
           <div class="card-body">
             <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
               <div class="row">
+                <mat-form-field *ngIf="false">
+                  <input
+                    matInput
+                    placeholder="Approval Status"
+                    type="number"
+                    formControlName="approvalStatus"
+                  />
+                </mat-form-field>
+
                 <div class="col-md-2">
                   <mat-form-field class="example-full-width">
                     <input
@@ -141,15 +150,29 @@
                   <mat-form-field>
                     <mat-label>Country</mat-label>
                     <mat-select formControlName="country" required>
-                      <ngx-mat-select-search [formControl]="countryCtrl" placeholderLabel="Search country"></ngx-mat-select-search>
-                      <mat-option *ngFor="let country of filteredCountries" [value]="country">
+                      <ngx-mat-select-search
+                        [formControl]="countryCtrl"
+                        placeholderLabel="Search country"
+                      ></ngx-mat-select-search>
+                      <mat-option
+                        *ngFor="let country of filteredCountries"
+                        [value]="country"
+                      >
                         {{ country }}
                       </mat-option>
-                      <mat-option *ngIf="filteredCountries.length === 0" disabled>
+                      <mat-option
+                        *ngIf="filteredCountries.length === 0"
+                        disabled
+                      >
                         No Options Available
                       </mat-option>
                     </mat-select>
-                    <mat-error *ngIf="studentForm.get('country').hasError('required') && studentForm.get('country').touched">
+                    <mat-error
+                      *ngIf="
+                        studentForm.get('country').hasError('required') &&
+                        studentForm.get('country').touched
+                      "
+                    >
                       Country is required
                     </mat-error>
                   </mat-form-field>
@@ -174,7 +197,10 @@
                       >
                         {{ institute.instituteName }}
                       </mat-option>
-                      <mat-option *ngIf="filteredInstitutes.length === 0" disabled>
+                      <mat-option
+                        *ngIf="filteredInstitutes.length === 0"
+                        disabled
+                      >
                         No Options Available
                       </mat-option>
                     </mat-select>
@@ -241,7 +267,7 @@
                   </mat-form-field>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-2" style="height: 200px;">
                   <mat-form-field>
                     <input
                       matInput
@@ -296,6 +322,9 @@
                     <th>Country</th>
                     <th>Institute</th>
                     <th>Intake</th>
+                    <th>Licence Status</th>
+                    <th>Approval Status</th>
+                    <th>Licence Expiry Date</th>
                     <th>Course Title</th>
                     <th>Student ID Card</th>
                     <th class="text-center">Action</th>
@@ -311,6 +340,30 @@
                     <td>{{ student.country }}</td>
                     <td>{{ student.instituteName }}</td>
                     <td>{{ student.intake | date : "shortDate" }}</td>
+
+                    <td>
+                      <span class="btn btn-danger"> Inactive </span>
+                      <span class="btn btn-success"> Active </span>
+                    </td>
+
+                    <td>
+                      <span
+                        *ngIf="student.approvalStatus === 0"
+                        class="btn btn-warning"
+                        >Pending</span
+                      >
+                      <span
+                        *ngIf="student.approvalStatus === 1"
+                        class="btn btn-success"
+                        >Approved</span
+                      >
+                      <span
+                        *ngIf="student.approvalStatus === 2"
+                        class="btn btn-danger"
+                        >Rejected</span
+                      >
+                    </td>
+                    <td></td>
                     <td>{{ student.courseTitle }}</td>
                     <td>
                       <img
@@ -333,11 +386,20 @@
                         Edit
                       </button>
                       <button
+                        *ngIf="student.approvalStatus === 1 || student.approvalStatus === 0"
                         class="btn btn-danger"
                         mat-button
-                        (click)="onDelete(student.id)"
+                        (click)="deactive(student.id)"
                       >
-                        Delete
+                        Deactive
+                      </button>
+                      <button
+                        *ngIf="student.approvalStatus === 2 || student.approvalStatus === 0"
+                        class="btn btn-primary"
+                        mat-button
+                        (click)="onActive(student.id)"
+                      >
+                        Approve
                       </button>
                     </td>
                   </tr>

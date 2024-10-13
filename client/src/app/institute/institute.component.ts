@@ -87,7 +87,10 @@ export class InstituteComponent implements OnInit {
   onDelete(instituteId: number) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
-      data: { message: 'Are you sure you want to delete this institute?' }
+      data: { 
+        message: 'Are you sure you want to delete this institute?',
+        buttonName: 'Delete'
+       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
