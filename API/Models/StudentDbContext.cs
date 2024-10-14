@@ -33,7 +33,7 @@ namespace API.Models
         public async Task SaveStudents(SaveStudent saveStudent)
         {
 
-            await Database.ExecuteSqlRawAsync("EXEC SaveStudents @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId,@Intake, @CourseTitle, @ApprovalStatus, @StudentIdCard",
+            await Database.ExecuteSqlRawAsync("EXEC SaveStudents @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId, @Intake, @Expire, @CourseTitle, @ApprovalStatus, @StudentIdCard",
                 new SqlParameter("@FirstName", saveStudent.firstName),
                 new SqlParameter("@LastName", saveStudent.lastName),
                 new SqlParameter("@Email", saveStudent.email),
@@ -42,6 +42,7 @@ namespace API.Models
                 new SqlParameter("@Country", saveStudent.country),
                 new SqlParameter("@InstituteId", saveStudent.instituteId),
                 new SqlParameter("@Intake", saveStudent.intake),
+                new SqlParameter("@Expire", saveStudent.expire),
                 new SqlParameter("@CourseTitle", saveStudent.courseTitle),
                 new SqlParameter("@ApprovalStatus", saveStudent.approvalStatus),
                 new SqlParameter("@StudentIdCard", saveStudent.studentIdCard ?? (object)DBNull.Value));
@@ -49,7 +50,7 @@ namespace API.Models
 
         public async Task UpdateStudentAsync(Student student)
         {
-            await Database.ExecuteSqlRawAsync("EXEC UpdateStudents @Id, @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId, @Intake, @CourseTitle, @ApprovalStatus, @StudentIdCard",
+            await Database.ExecuteSqlRawAsync("EXEC UpdateStudents @Id, @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId, @Intake, @Expire, @CourseTitle, @ApprovalStatus, @StudentIdCard",
                 new SqlParameter("@Id", student.id),
                 new SqlParameter("@FirstName", student.firstName),
                 new SqlParameter("@LastName", student.lastName),
@@ -59,6 +60,7 @@ namespace API.Models
                 new SqlParameter("@Country", student.country),
                 new SqlParameter("@InstituteId", student.instituteId),
                 new SqlParameter("@Intake", student.intake),
+                new SqlParameter("@Expire", student.expire),
                 new SqlParameter("@CourseTitle", student.courseTitle),
                 new SqlParameter("@ApprovalStatus", student.approvalStatus),
                 new SqlParameter("@StudentIdCard", student.studentIdCard ?? (object)DBNull.Value));

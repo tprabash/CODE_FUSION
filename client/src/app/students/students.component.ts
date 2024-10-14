@@ -49,6 +49,7 @@ export class StudentsComponent implements OnInit {
       country: ['', Validators.required],
       instituteName: ['', Validators.required],
       intake: ['', Validators.required],
+      expire:[''],
       courseTitle: ['', [Validators.required, Validators.minLength(3)]],
       studentIdCard: [null, Validators.required],
       approvalStatus: [0]
@@ -63,19 +64,19 @@ export class StudentsComponent implements OnInit {
     this.instituteFilter();
   }
 
-  isExpired(licenceExpiryDate: string | null | undefined): boolean {
-    if (!licenceExpiryDate) {
+  isExpired(expire: string | null | undefined): boolean {
+    if (!expire) {
       return false;
     }
-    const expiryDate = new Date(licenceExpiryDate);
+    const expiryDate = new Date(expire);
     return expiryDate < this.today;
   }
 
-  isActive(licenceExpiryDate: string | null | undefined): boolean {
-    if (!licenceExpiryDate) {
+  isActive(expire: string | null | undefined): boolean {
+    if (!expire) {
       return false;
     }
-    const expiryDate = new Date(licenceExpiryDate);
+    const expiryDate = new Date(expire);
     return expiryDate >= this.today;
   }
 
@@ -181,6 +182,7 @@ export class StudentsComponent implements OnInit {
         payload.append('country', this.studentForm.get('country')?.value);
         payload.append('instituteId', this.selectedInstitute);
         payload.append('intake', new Date(this.studentForm.get('intake')?.value).toISOString());
+        payload.append('expire', new Date(this.studentForm.get('expire')?.value).toISOString());
         payload.append('courseTitle', this.studentForm.get('courseTitle')?.value);
 
         const studentIdCardValue = this.studentForm.get('studentIdCard')?.value;
@@ -223,6 +225,7 @@ export class StudentsComponent implements OnInit {
       country: student.country,
       instituteName: student.instituteId,
       intake: student.intake,
+      expire: student.expire,
       courseTitle: student.courseTitle
     });
 

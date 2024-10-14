@@ -215,7 +215,7 @@
                   </mat-form-field>
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-1">
                   <mat-form-field>
                     <mat-label>Intake</mat-label>
                     <input
@@ -237,6 +237,22 @@
                     >
                       Intake is required
                     </mat-error>
+                  </mat-form-field>
+                </div>
+
+                <div class="col-md-1">
+                  <mat-form-field>
+                    <mat-label>Licence Expiry Date</mat-label>
+                    <input
+                      matInput
+                      [matDatepicker]="expire"
+                      formControlName="expire"
+                    />
+                    <mat-datepicker-toggle
+                      matSuffix
+                      [for]="expire"
+                    ></mat-datepicker-toggle>
+                    <mat-datepicker #expire></mat-datepicker>
                   </mat-form-field>
                 </div>
 
@@ -340,12 +356,10 @@
                     <td>{{ student.country }}</td>
                     <td>{{ student.instituteName }}</td>
                     <td>{{ student.intake | date : "shortDate" }}</td>
-
                     <td>
-                      <span class="btn btn-danger"> Inactive </span>
-                      <span class="btn btn-success"> Active </span>
+                      <span *ngIf="isExpired(student.expire)" class="btn btn-danger">Inactive</span>
+                      <span *ngIf="isActive(student.expire)" class="btn btn-success">Active</span>
                     </td>
-
                     <td>
                       <span
                         *ngIf="student.approvalStatus === 0"
@@ -363,7 +377,7 @@
                         >Rejected</span
                       >
                     </td>
-                    <td></td>
+                    <td>{{ student.expire | date : "shortDate" }}</td>
                     <td>{{ student.courseTitle }}</td>
                     <td>
                       <img

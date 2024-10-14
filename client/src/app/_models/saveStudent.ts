@@ -6,6 +6,7 @@ export interface SaveStudent {
     address?: string;
     country: string;
     intake: Date;
+    expire: Date;
     courseTitle: string;
     studentIdCard: string;
     instituteId: number;

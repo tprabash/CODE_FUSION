@@ -8,6 +8,7 @@ export interface Student {
   country: string;
   instituteName: string;
   intake: Date;
+  expire: Date;
   courseTitle: string;
   studentIdCard: string;
   instituteId: number;

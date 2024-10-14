@@ -13,6 +13,7 @@ namespace API.Models
         public string country { get; set; }
         public int instituteId  { get; set; }
         public DateTime intake { get; set; }
+        public DateTime expire { get; set; }
         public string courseTitle { get; set; }
         public int approvalStatus { get; set; }
         public string studentIdCard { get; set; }
