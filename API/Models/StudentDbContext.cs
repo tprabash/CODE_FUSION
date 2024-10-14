@@ -30,38 +30,38 @@ namespace API.Models
             return await Students.FromSqlRaw("EXEC GetAllstudents").ToListAsync();
         }
 
-        public async Task SaveStudentAsync(SaveStudent saveStudent)
+        public async Task SaveStudents(SaveStudent saveStudent)
         {
 
-            await Database.ExecuteSqlRawAsync("EXEC SaveStudents @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId, @Intake, @CourseTitle, @ApprovalStatus, @StudentIdCard",
-                new SqlParameter("@FirstName", saveStudent.FirstName),
-                new SqlParameter("@LastName", saveStudent.LastName),
-                new SqlParameter("@Email", saveStudent.Email),
-                new SqlParameter("@Phone", saveStudent.Phone),
-                new SqlParameter("@Address", saveStudent.Address ?? (object)DBNull.Value),
-                new SqlParameter("@Country", saveStudent.Country),
-                new SqlParameter("@InstituteId", saveStudent.InstituteId),
-                new SqlParameter("@Intake", saveStudent.Intake),
-                new SqlParameter("@CourseTitle", saveStudent.CourseTitle),
-                new SqlParameter("@ApprovalStatus", saveStudent.ApprovalStatus),
-                new SqlParameter("@StudentIdCard", saveStudent.StudentIdCard ?? (object)DBNull.Value));
-
+            await Database.ExecuteSqlRawAsync("EXEC SaveStudents @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId,@Intake, @CourseTitle, @ApprovalStatus, @StudentIdCard",
+                new SqlParameter("@FirstName", saveStudent.firstName),
+                new SqlParameter("@LastName", saveStudent.lastName),
+                new SqlParameter("@Email", saveStudent.email),
+                new SqlParameter("@Phone", saveStudent.phone),
+                new SqlParameter("@Address", saveStudent.address ?? (object)DBNull.Value),
+                new SqlParameter("@Country", saveStudent.country),
+                new SqlParameter("@InstituteId", saveStudent.instituteId),
+                new SqlParameter("@Intake", saveStudent.intake),
+                new SqlParameter("@CourseTitle", saveStudent.courseTitle),
+                new SqlParameter("@ApprovalStatus", saveStudent.approvalStatus),
+                new SqlParameter("@StudentIdCard", saveStudent.studentIdCard ?? (object)DBNull.Value));
         }
 
         public async Task UpdateStudentAsync(Student student)
         {
-            await Database.ExecuteSqlRawAsync("EXEC UpdateStudents @Id, @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId, @Intake, @CourseTitle, @StudentIdCard",
-                new SqlParameter("@Id", student.Id),
-                new SqlParameter("@FirstName", student.FirstName),
-                new SqlParameter("@LastName", student.LastName),
-                new SqlParameter("@Email", student.Email),
-                new SqlParameter("@Phone", student.Phone),
-                new SqlParameter("@Address", student.Address ?? (object)DBNull.Value),
-                new SqlParameter("@Country", student.Country),
-                new SqlParameter("@InstituteId", student.InstituteId),
-                new SqlParameter("@Intake", student.Intake),
-                new SqlParameter("@CourseTitle", student.CourseTitle),
-                new SqlParameter("@StudentIdCard", student.StudentIdCard ?? (object)DBNull.Value));
+            await Database.ExecuteSqlRawAsync("EXEC UpdateStudents @Id, @FirstName, @LastName, @Email, @Phone, @Address, @Country, @InstituteId, @Intake, @CourseTitle, @ApprovalStatus, @StudentIdCard",
+                new SqlParameter("@Id", student.id),
+                new SqlParameter("@FirstName", student.firstName),
+                new SqlParameter("@LastName", student.lastName),
+                new SqlParameter("@Email", student.email),
+                new SqlParameter("@Phone", student.phone),
+                new SqlParameter("@Address", student.address ?? (object)DBNull.Value),
+                new SqlParameter("@Country", student.country),
+                new SqlParameter("@InstituteId", student.instituteId),
+                new SqlParameter("@Intake", student.intake),
+                new SqlParameter("@CourseTitle", student.courseTitle),
+                new SqlParameter("@ApprovalStatus", student.approvalStatus),
+                new SqlParameter("@StudentIdCard", student.studentIdCard ?? (object)DBNull.Value));
         }
 
         public async Task DeactiveStudentByIdAsync(int id)

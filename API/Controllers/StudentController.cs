@@ -26,15 +26,15 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        [Route("AddStudent")]
-        public async Task<IActionResult> AddStudent([FromForm] SaveStudent saveStudent)
+        [Route("SaveStudents")]
+        public async Task<IActionResult> SaveStudents([FromForm] SaveStudent saveStudent)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _studentDbContext.SaveStudentAsync(saveStudent);
+            await _studentDbContext.SaveStudents(saveStudent);
             return Ok(saveStudent);
         }
 

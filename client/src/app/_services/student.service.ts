@@ -17,8 +17,8 @@ export class studentservice {
     return this.http.get<Student[]>(`${this.apiUrl}/GetStudent`);
   }
 
-  saveStudent(formData: FormData): Observable<SaveStudent> {
-    return this.http.post<SaveStudent>(`${this.apiUrl}/AddStudent`, formData);
+  saveStudents(formData: FormData): Observable<SaveStudent> {
+    return this.http.post<SaveStudent>(`${this.apiUrl}/SaveStudents`, formData);
   }
 
   updateStudent(formData: FormData): Observable<Student> {

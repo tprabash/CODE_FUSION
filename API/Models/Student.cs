@@ -4,18 +4,17 @@ namespace API.Models
 {
     public class Student
     {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Address { get; set; }
-        public string Country { get; set; }
-        public string InstituteName { get; set; }
-        public int InstituteId  { get; set; }
-        public DateTime Intake { get; set; }
-        public string CourseTitle { get; set; }
-        public int ApprovalStatus { get; set; }
-        public string StudentIdCard { get; set; }
+        public int id { get; set; }
+        public string firstName { get; set; }
+        public string lastName { get; set; }
+        public string email { get; set; }
+        public string phone { get; set; }
+        public string address { get; set; }
+        public string country { get; set; }
+        public int instituteId  { get; set; }
+        public DateTime intake { get; set; }
+        public string courseTitle { get; set; }
+        public int approvalStatus { get; set; }
+        public string studentIdCard { get; set; }
     }
 }
