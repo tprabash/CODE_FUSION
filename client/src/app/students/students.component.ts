@@ -30,6 +30,7 @@ export class StudentsComponent implements OnInit {
   filteredInstitutes: any[] = [];
   myFilterControl = new FormControl();
   today: Date = new Date();
+  studentId: any;
 
   constructor(
     private studentservice: studentservice,
@@ -145,6 +146,7 @@ export class StudentsComponent implements OnInit {
   }
 
   onSubmit() {
+    console.log("payload", this.studentForm.value); 
     if (this.studentForm.valid) {
       const formData = new FormData();
 
@@ -160,11 +162,6 @@ export class StudentsComponent implements OnInit {
             valueToAppend = new Date(controlValue).toISOString();
           }
 
-          if (key === 'intake') {
-            const date = new Date(controlValue);
-            valueToAppend = date.toISOString().slice(0, 10);
-          }
-
           if (key === 'studentIdCard' && controlValue) {
             valueToAppend = controlValue.replace(/^data:image\/[a-z]+;base64,/, '');
           }
@@ -175,7 +172,7 @@ export class StudentsComponent implements OnInit {
 
       if (this.isEditMode) {
         const payload = new FormData();
-        payload.append('id', this.studentForm.get('id')?.value);
+        payload.append('id', this.studentId);
         payload.append('firstName', this.studentForm.get('firstName')?.value);
         payload.append('lastName', this.studentForm.get('lastName')?.value);
         payload.append('email', this.studentForm.get('email')?.value);
@@ -184,7 +181,6 @@ export class StudentsComponent implements OnInit {
         payload.append('country', this.studentForm.get('country')?.value);
         payload.append('instituteId', this.selectedInstitute);
         payload.append('intake', new Date(this.studentForm.get('intake')?.value).toISOString());
-        payload.append('instituteName', this.studentForm.get('instituteName')?.value);
         payload.append('courseTitle', this.studentForm.get('courseTitle')?.value);
 
         const studentIdCardValue = this.studentForm.get('studentIdCard')?.value;
@@ -203,7 +199,7 @@ export class StudentsComponent implements OnInit {
         if (this.emailExists) {
           this.toastr.error('Email already exists, cannot submit form');
         } else {
-          this.studentservice.saveStudent(formData).subscribe(
+          this.studentservice.saveStudents(formData).subscribe(
             response => {
               this.toastr.success('Student saved successfully');
               this.getStudents();
@@ -230,10 +226,13 @@ export class StudentsComponent implements OnInit {
       courseTitle: student.courseTitle
     });
 
+    
+
     this.selectedImage = student.studentIdCard ? `data:image/jpeg;base64,${student.studentIdCard}` : null;
     this.studentForm.get('studentIdCard')?.setValue(this.selectedImage);
     this.isEditMode = true;
     this.selectedInstitute = student.instituteId;
+    this.studentId = student.id;
   }
 
   onInstituteSelection(event: any) {
